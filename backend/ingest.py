@@ -2,7 +2,11 @@ import hashlib
 from pathlib import Path
 import re, json, time
 from pgvector import Vector
-from backend.database.db import (update_document_in_db, delete_chunks_in_db, insert_chunk_in_db, insert_document_into_db, search_by_keyword, search_by_vector)
+from backend.database.db import (
+    replace_document_and_chunks,
+    search_by_keyword,
+    search_by_vector,
+)
 from backend.embedder import embed, chunker, tokenize, get_embedder_model_max_seg_length
 from backend.helper import retrieve_val_from_env
 from backend.schema import SearchPlanningPolicy
@@ -53,20 +57,29 @@ def identify_document(path : Path, documents_root: Path):
     
     return source_key, int(version)
 
-def update_document(connection, text : str, document_id, source_key, file_path, title, source_version, content_hash):
+def save_document(connection, text, source_key, file_path, title, source_version, content_hash):
     chunks = chunker(text)
+    if not chunks:
+        print(f"No indexable text in {file_path.name}. Skipping.")
+        return
     embeddings = embed(chunks)
-    update_document_in_db(connection, document_id, source_key, str(file_path), title, source_version, content_hash)
-    delete_chunks_in_db(connection, document_id)
-    for chunk_index, (content, embedding) in enumerate(zip(chunks, embeddings, strict=True), start = 1):
-        insert_chunk_in_db(connection, document_id, chunk_index, content, Vector(embedding))
-        
-def insert_document(connection, text, source_key, file_path, title, source_version, content_hash):
-    id = insert_document_into_db(connection, source_key, str(file_path), title, source_version, content_hash)
-    chunks = chunker(text)
-    embeddings = embed(chunks)
-    for chunk_index, (content, embedding) in enumerate(zip(chunks, embeddings, strict=True), start = 1):
-        insert_chunk_in_db(connection, id, chunk_index, content, Vector(embedding))
+    prepared_chunks = [
+        (content, Vector(embedding))
+        for content, embedding in zip(chunks, embeddings, strict=True)
+    ]
+
+    document_id = replace_document_and_chunks(
+        connection,
+        source_key=source_key,
+        file_path=str(file_path),
+        title=title,
+        source_version=source_version,
+        content_hash=content_hash,
+        chunks=prepared_chunks,
+    )
+    if document_id is None:
+        print(f"Skipping {file_path.name}: this version or a newer one is already indexed.")
+    return document_id
         
 def prepare_search_plan(session_id, query, history : list[dict] = [], policy: SearchPlanningPolicy = SearchPlanningPolicy):
     def calculate_elapsed_time(start, end, text):
@@ -161,9 +174,10 @@ def retrieve_candidates(connection, search_dict: dict, limit=20):
     search_texts = search_dict.get("search_text")
     search_vectors = search_dict.get("vectors")
     
-    for text, vector in zip(search_texts, search_vectors, strict=True):
-        ranked_list.append(search_by_keyword(connection, text, limit=limit))
-        ranked_list.append(search_by_vector(connection, vector, limit=limit))
+    with connection.transaction():
+        for text, vector in zip(search_texts, search_vectors, strict=True):
+            ranked_list.append(search_by_keyword(connection, text, limit=limit))
+            ranked_list.append(search_by_vector(connection, vector, limit=limit))
         
     return ranked_list
     

@@ -1,8 +1,8 @@
 from pathlib import Path
 from backend.extractor import extract_text_from_file
-from backend.ingest import calculate_file_hash, identify_document, update_document, insert_document
+from backend.ingest import calculate_file_hash, identify_document, save_document
 from backend.database.db import init_db, get_document, update_session_in_db, insert_session_message_in_db, insert_session_in_db
-import os, json
+import os, json, time
 from backend.helper import retrieve_val_from_env
 
 from backend.schema import SearchPlanningPolicy
@@ -24,15 +24,9 @@ def ingestion():
                 source_key, source_version = identify_document(file_path, documents)
                 curr_hash = calculate_file_hash(file_path)
                 existing = get_document(connection, source_key)
-                
-                if existing is None:
-                    text = extract_text_from_file(file_path)
-                    if text is None or text == "":
-                        print(f"Empty document {file_path.stem}. Nothing to insert!")
-                        continue
-                    insert_document(connection, text, source_key, file_path, file_path.stem, source_version, curr_hash)
-                else:
-                    document_id, stored_version, stored_hash = existing
+
+                if existing is not None:
+                    _, stored_version, stored_hash = existing
                     if (curr_hash == stored_hash) and (source_version == stored_version): # same hash
                         print(f"Content of inserted document is the same as current hashed document with same version {stored_version}")
                         continue
@@ -45,12 +39,11 @@ def ingestion():
                         print(f"Error! Version is {stored_version} for input and stored version but content is different!")
                         continue
                     
-                    if int(stored_version) < int(source_version): # if newer version is in, update document
-                        text = extract_text_from_file(file_path)
-                        if text is None or text == "":
-                            print(f"Empty document {file_path.stem}. Nothing to insert!")
-                            continue
-                        update_document(connection, text, document_id, source_key, file_path, file_path.stem, source_version, curr_hash)
+                text = extract_text_from_file(file_path)
+                if not text:
+                    print(f"Empty document {file_path.stem}. Nothing to insert!")
+                    continue
+                save_document(connection, text, source_key, file_path, file_path.stem, source_version, curr_hash)
 
 
 def chat():
@@ -91,7 +84,8 @@ def chat():
                 message_index += 1
                 continue
             
-            chunks = rank_chunks_with_rrf(retrieve_candidates(connection=connection, search_dict=plan))
+            ranked_lists = retrieve_candidates(connection=connection, search_dict=plan)
+            chunks = rank_chunks_with_rrf(ranked_lists)
             
             payload = {
                 "current_query" : current_query["content"],
@@ -99,7 +93,8 @@ def chat():
                 "sources": [{"source_id": f"S{i}", "content": chunk["content"]} for i, chunk in enumerate(chunks, start=1)]
             }
             
-            # for decomposition and rewriting
+            # for inference
+            inference_start = time.perf_counter()
             response = call_llm(
                 messages=[
                     {
@@ -112,30 +107,13 @@ def chat():
                 max_output_tokens=2048,
                 session_id=session_id
             )
+            print(f"Main function inference time: {time.perf_counter()-inference_start}")
             
             answer = response["content"]
             insert_session_message_in_db(connection=connection, session_id=session_id, message_index=message_index, message_role="assistant", message_content=answer)
             messages.append({"role": "assistant", "content": answer})
             message_index += 1
             print(answer)
-            
-                
-                
-            
-                # process query (need processing? need decompose? need rewrite?)
-                
-                # send to llm and receive input
-                
-                # receive input - need to structure. need be able to let it do tools calling. so need to tell it what function is available and 
-                # how to call it
-                
-                # parse llm output. check if tools call
-                
-                # determine if continue? count tokens == token_limit
-                
-                # present answer if done
-                
-                # exit loop to get next question
         
 
 def main():

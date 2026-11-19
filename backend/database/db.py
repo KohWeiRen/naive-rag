@@ -24,47 +24,40 @@ def init_db():
         raise
     
 def get_document(connection, source_key : str):
-    return connection.execute(
-    """
-    SELECT id, source_version, content_hash
-    FROM documents
-    WHERE source_key = %s
-    """,
-    (source_key,),
-    ).fetchone()
+    with connection.transaction():
+        return connection.execute(
+            """
+            SELECT id, source_version, content_hash
+            FROM documents
+            WHERE source_key = %s
+            """,
+            (source_key,),
+        ).fetchone()
 
-def insert_document_into_db(connection, source_key, file_path, title, source_version, content_hash):
+def upsert_document_in_db(connection, source_key, file_path, title, source_version, content_hash):
+    """Return the document ID when a new or newer version is saved."""
     row = connection.execute("""
-                             INSERT INTO documents 
+                             INSERT INTO documents
                              (source_key, file_path, title, source_version, content_hash)
                              VALUES (%s, %s, %s, %s, %s)
+                             ON CONFLICT (source_key) DO UPDATE SET
+                                 file_path = EXCLUDED.file_path,
+                                 title = EXCLUDED.title,
+                                 source_version = EXCLUDED.source_version,
+                                 content_hash = EXCLUDED.content_hash,
+                                 updated_at = now()
+                             WHERE documents.source_version < EXCLUDED.source_version
                              RETURNING id
                              """,
                              (source_key, file_path, title, source_version, content_hash),
                              ).fetchone()
-    connection.commit()
-    return row[0]
-
-def update_document_in_db(connection, id, source_key, file_path, title, source_version, content_hash):
-    row = connection.execute("""
-                             UPDATE documents 
-                             SET source_key = %s, file_path = %s, title = %s, source_version = %s, content_hash = %s, updated_at = now()
-                             WHERE id = %s
-                             RETURNING id
-                             """,
-                             (source_key, file_path, title, source_version, content_hash, id)
-                             ).fetchone()
-    connection.commit()
-    if row is None:
-        raise LookupError(f"Document not found: {id}")
-    return row[0]
+    return row[0] if row is not None else None
 
 def delete_chunks_in_db(connection, document_id):
     connection.execute("""
                        DELETE FROM document_chunks WHERE document_id = %s 
                        """,
                        (document_id,))
-    connection.commit()
 
 def insert_chunk_in_db(connection, document_id, chunk_index, content, embedding):
     connection.execute("""
@@ -72,7 +65,26 @@ def insert_chunk_in_db(connection, document_id, chunk_index, content, embedding)
                        VALUES (%s, %s, %s, %s)
                        """,
                        (document_id, chunk_index, content, embedding))
-    connection.commit()
+
+def replace_document_and_chunks(
+    connection, *, source_key, file_path, title, source_version, content_hash, chunks
+):
+    """Save the document and its prepared chunks together. Return its ID, or None if skipped."""
+    if not chunks:
+        raise ValueError("A document replacement requires at least one chunk")
+
+    with connection.transaction():
+        document_id = upsert_document_in_db(
+            connection, source_key, file_path, title, source_version, content_hash
+        )
+        if document_id is None:
+            return None
+
+        delete_chunks_in_db(connection, document_id)
+        for chunk_index, (content, embedding) in enumerate(chunks, start=1):
+            insert_chunk_in_db(connection, document_id, chunk_index, content, embedding)
+
+    return document_id
 
 def insert_session_in_db(connection):
     row = connection.execute("INSERT INTO sessions DEFAULT VALUES RETURNING id").fetchone()
