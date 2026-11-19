@@ -1,0 +1,10 @@
+DEVICE LAB ACCESS CHECKLIST
+
+Company: Ternwell Systems
+Document ID: SEC-006
+Type: Procedure
+Owner: Security
+Issued: 2026-08-27
+Status: Current
+
+Enter the hardware lab with a staff badge and an active lab role. Sign out test gateways at the bench station and record the label, charger, and expected return date. Place unidentified devices on the quarantine shelf. Visiting installers must be escorted and may use the guest workbench during business hours.

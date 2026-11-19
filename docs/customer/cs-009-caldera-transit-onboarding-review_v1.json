@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "CS-009",
+  "title": "Caldera Transit onboarding review",
+  "type": "Meeting notes",
+  "owner": "Customer Enablement",
+  "issued": "2026-10-21",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Summary",
+      "paragraphs": [
+        "Caldera Transit will pilot Wayline at two Singapore facilities. The customer has selected the Singapore service region and the Standard support plan."
+      ]
+    },
+    {
+      "heading": "Decisions",
+      "paragraphs": [
+        "Use email alerts during the first week. Trial webhooks in the sandbox after the customer's endpoint finishes security review. Keep the data import to a single synthetic trip for the first operator walkthrough."
+      ]
+    },
+    {
+      "heading": "Actions",
+      "paragraphs": [
+        "Nadia Rahim will provision the sandbox by 23 October. The customer will provide the site roster and installation dates by 28 October. Customer Enablement will schedule the first review after seven days of live readings."
+      ]
+    }
+  ]
+}

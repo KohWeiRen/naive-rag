@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "ENG-009",
+  "title": "ADR 021 for regional queue separation",
+  "type": "Decision record",
+  "owner": "Platform Engineering",
+  "issued": "2026-08-12",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Status",
+      "paragraphs": [
+        "Accepted. Architecture decision ADR-021."
+      ]
+    },
+    {
+      "heading": "Decision",
+      "paragraphs": [
+        "Use separate regional queues for ingestion and delivery. Apply worker concurrency limits per webhook endpoint. Persist accepted telemetry before creating downstream notification jobs."
+      ]
+    },
+    {
+      "heading": "Tradeoff",
+      "paragraphs": [
+        "Regional queues simplify isolation and reduce the effect of slow endpoints. They add dashboard and deployment complexity because each region has separate queue depth and age metrics. The release checklist must cover Singapore and EU independently."
+      ]
+    }
+  ]
+}

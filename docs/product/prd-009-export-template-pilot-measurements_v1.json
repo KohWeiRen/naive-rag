@@ -1,0 +1,35 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "PRD-009",
+  "title": "Export template pilot measurements",
+  "type": "Experiment record",
+  "owner": "Product",
+  "issued": "2026-10-28",
+  "status": "Current",
+  "experiment_id": "EX-17",
+  "participants": 8,
+  "median_seconds": {
+    "manual": 91,
+    "template": 29
+  },
+  "sections": [
+    {
+      "heading": "Design",
+      "paragraphs": [
+        "Pilot EX-17 compares a saved template workflow with repeated manual filters. Eight operators at three synthetic test sites ran both workflows using the same date range and metrics."
+      ]
+    },
+    {
+      "heading": "Result",
+      "paragraphs": [
+        "Median setup time fell from 91 seconds to 29 seconds. One participant selected a template for the wrong region because the region was visible only in the details panel."
+      ]
+    },
+    {
+      "heading": "Decision",
+      "paragraphs": [
+        "Keep the feature in pilot. Add region to the template selector and repeat the usability check before launch."
+      ]
+    }
+  ]
+}

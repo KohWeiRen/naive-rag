@@ -42,6 +42,7 @@ def insert_document_into_db(connection, source_key, file_path, title, source_ver
                              """,
                              (source_key, file_path, title, source_version, content_hash),
                              ).fetchone()
+    connection.commit()
     return row[0]
 
 def update_document_in_db(connection, id, source_key, file_path, title, source_version, content_hash):
@@ -53,6 +54,7 @@ def update_document_in_db(connection, id, source_key, file_path, title, source_v
                              """,
                              (source_key, file_path, title, source_version, content_hash, id)
                              ).fetchone()
+    connection.commit()
     if row is None:
         raise LookupError(f"Document not found: {id}")
     return row[0]
@@ -62,6 +64,7 @@ def delete_chunks_in_db(connection, document_id):
                        DELETE FROM document_chunks WHERE document_id = %s 
                        """,
                        (document_id,))
+    connection.commit()
 
 def insert_chunk_in_db(connection, document_id, chunk_index, content, embedding):
     connection.execute("""
@@ -69,9 +72,11 @@ def insert_chunk_in_db(connection, document_id, chunk_index, content, embedding)
                        VALUES (%s, %s, %s, %s)
                        """,
                        (document_id, chunk_index, content, embedding))
+    connection.commit()
 
 def insert_session_in_db(connection):
     row = connection.execute("INSERT INTO sessions DEFAULT VALUES RETURNING id").fetchone()
+    connection.commit()
     return row[0]
 
 def update_session_in_db(connection, session_id):
@@ -81,12 +86,14 @@ def update_session_in_db(connection, session_id):
                        """,
                        (session_id,)
                        )
+    connection.commit()
     
 def insert_session_message_in_db(connection, session_id, message_index, message_role, message_content):
     connection.execute("""
                        INSERT INTO session_messages (session_id, message_index, message_role, content) VALUES (%s, %s, %s, %s)
                        """,
                        (session_id, message_index, message_role, message_content))
+    connection.commit()
     
 def search_by_vector(connection, query_vector, limit=20):
     return connection.execute("""

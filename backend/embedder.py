@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from helper import retrieve_val_from_env
+from backend.helper import retrieve_val_from_env
 
 model=retrieve_val_from_env("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 driver=retrieve_val_from_env("DRIVER", "cpu")
@@ -34,4 +34,4 @@ def tokenize(text: str, add_special_tokens: bool = False, truncation: bool = Fal
     return (len(token_ids), token_ids)
 
 def get_embedder_model_max_seg_length():
-    return model.max_seq_length
+    return embedding_model.max_seq_length

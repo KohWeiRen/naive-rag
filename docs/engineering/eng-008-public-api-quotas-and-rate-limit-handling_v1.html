@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Public API quotas and rate limit handling | Ternwell Systems</title>
+<style>body{font:16px/1.55 system-ui,sans-serif;color:#183042;background:#f5f8fa;margin:0;padding:2rem}main{max-width:48rem;margin:auto;background:white;padding:2rem;border-top:5px solid #126d66}h1,h2{line-height:1.2}dt{font-weight:600}dd{margin:0 0 .55rem}</style>
+</head><body><main>
+<header><h1>Public API quotas and rate limit handling</h1><dl>
+<dt>Company</dt><dd>Ternwell Systems</dd>
+<dt>Document ID</dt><dd>ENG-008</dd>
+<dt>Type</dt><dd>API reference</dd>
+<dt>Owner</dt><dd>Platform Engineering</dd>
+<dt>Issued</dt><dd>2026-10-10</dd>
+<dt>Status</dt><dd>Current</dd>
+</dl></header><article>
+<section>
+<h2>Request budget</h2>
+<p>The tenant API permits 600 requests per minute per tenant in each region. A short burst of 120 requests in a 10-second window is allowed. Large report exports have a separate job quota of two concurrent exports per tenant.</p>
+</section>
+<section>
+<h2>Client behavior</h2>
+<p>When you receive 429, read Retry-After and use jitter before retrying. Batch requests where the endpoint accepts a batch. Avoid restarting a full pagination sequence after a single throttled request.</p>
+</section>
+<section>
+<h2>Operations</h2>
+<p>Contact Support with the request ID and UTC timestamp when a repeated throttle happens below the documented quota. Escalate requests for a permanent quota change to Product and Platform Engineering.</p>
+</section>
+</article></main></body></html>

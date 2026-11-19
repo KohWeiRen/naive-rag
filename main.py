@@ -2,12 +2,18 @@ from pathlib import Path
 from backend.extractor import extract_text_from_file
 from backend.ingest import calculate_file_hash, identify_document, update_document, insert_document
 from backend.database.db import init_db, get_document, update_session_in_db, insert_session_message_in_db, insert_session_in_db
-import os, sys
+import os, json
 from backend.helper import retrieve_val_from_env
 
-max_loop = retrieve_val_from_env("LOOP_LIMIT", 5)
+from backend.schema import SearchPlanningPolicy
+from backend.ingest import prepare_search_plan, retrieve_candidates, rank_chunks_with_rrf, load_instructions
+from backend.models.driver import call_llm
 
-documents = Path(__file__).resolve().parent / "ternwell-docs"
+max_loop = retrieve_val_from_env("LOOP_LIMIT", 5)
+model = retrieve_val_from_env("OPENCODE_MODEL", "deepseek-v4.1-flash")
+
+documents = Path(__file__).resolve().parent / "docs"
+searchPlanningPolicy = SearchPlanningPolicy(max_search_queries=4)
 
 def ingestion():
     with init_db() as connection:
@@ -51,21 +57,70 @@ def chat():
     with init_db() as connection:
         print("Starting a new query session: ")
         session_id = insert_session_in_db(connection)
-        message = []
+        messages = []
         message_index = 1
+        clarification = ""
         while True:
-            query = input("Enter your question or enter quit to stop: ").strip()
+            if clarification:
+                print(f"Answer the following clarification question: {clarification}")
+                query = input("Enter answer: ").strip()
+                clarification = ""
+            else:
+                query = input("Enter your question or enter quit to stop: ").strip()
+                
             if query.lower() == "quit":
                 update_session_in_db(connection, session_id)
                 connection.commit()
                 print("Ending session...")
                 break
-        
-            for _ in range(max_loop):
-                message.append({"role": "user", "content": query})
-                insert_session_message_in_db(connection, session_id, message_index, message[-1]["role"], message[-1]["content"])
-                message_index += 1
+                
+            if not query:
+                print("Query cannot be empty! Enter a valid query.") # check if the query is valid or not
+                continue
             
+            current_query = {"role": "user", "content": query}
+            insert_session_message_in_db(connection, session_id, message_index, current_query["role"], current_query["content"])
+            plan = prepare_search_plan(query=current_query, history=messages, policy=searchPlanningPolicy, session_id=session_id) # send an inference call to llm for query preparation
+            messages.append(current_query)
+            message_index += 1
+            
+            if plan["status"] == "needs_clarification":
+                clarification = plan["clarification_question"].strip()
+                insert_session_message_in_db(connection, session_id, message_index, "assistant", clarification)
+                messages.append({"role": "assistant", "content": clarification})
+                message_index += 1
+                continue
+            
+            chunks = rank_chunks_with_rrf(retrieve_candidates(connection=connection, search_dict=plan))
+            
+            payload = {
+                "current_query" : current_query["content"],
+                "history": messages[:-1],
+                "sources": [{"source_id": f"S{i}", "content": chunk["content"]} for i, chunk in enumerate(chunks, start=1)]
+            }
+            
+            # for decomposition and rewriting
+            response = call_llm(
+                messages=[
+                    {
+                        "role" : "system", "content" : load_instructions(task="query_answering")
+                    },
+                    {
+                        "role" : "user", "content" : json.dumps(payload)
+                    }
+                ], # insert instruction, current query, past history and limits
+                max_output_tokens=2048,
+                session_id=session_id
+            )
+            
+            answer = response["content"]
+            insert_session_message_in_db(connection=connection, session_id=session_id, message_index=message_index, message_role="assistant", message_content=answer)
+            messages.append({"role": "assistant", "content": answer})
+            message_index += 1
+            print(answer)
+            
+                
+                
             
                 # process query (need processing? need decompose? need rewrite?)
                 

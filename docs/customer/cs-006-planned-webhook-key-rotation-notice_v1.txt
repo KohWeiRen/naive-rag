@@ -1,0 +1,12 @@
+PLANNED WEBHOOK KEY ROTATION NOTICE
+
+Company: Ternwell Systems
+Document ID: CS-006
+Type: Email template
+Owner: Customer Enablement
+Issued: 2026-10-07
+Status: Current
+
+Subject: Confirm your Wayline webhook signing key rotation
+
+We will activate your new signing key at the scheduled UTC time. Configure your receiver to accept both keys during the 24-hour overlap. Reply after you verify the signed test delivery. We will revoke the old key after confirmation and send a second test. Share delivery IDs with us if either test fails.

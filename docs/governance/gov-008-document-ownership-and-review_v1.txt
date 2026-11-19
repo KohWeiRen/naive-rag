@@ -1,0 +1,10 @@
+DOCUMENT OWNERSHIP AND REVIEW
+
+Company: Ternwell Systems
+Document ID: GOV-008
+Type: Procedure
+Owner: Privacy and Governance
+Issued: 2026-10-22
+Status: Current
+
+Publish policies with an owner, effective date, and status. Set a review date when approving a new policy. Keep superseded drafts clearly marked and link to the replacement. If a search result shows conflicting numbers, check the status and effective date, then ask the owner to review any active copy with stale wording.

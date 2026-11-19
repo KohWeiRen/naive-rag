@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "SEC-005",
+  "title": "Temporary access review for Fleet Console",
+  "type": "Access record",
+  "owner": "Security",
+  "issued": "2026-10-12",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Request",
+      "paragraphs": [
+        "Request ACC-662. Customer Enablement needs read-only access to the Northmere Produce pilot tenant to confirm device enrollment. The approval is restricted to tenant metadata and diagnostic views."
+      ]
+    },
+    {
+      "heading": "Decision",
+      "paragraphs": [
+        "Approved by the Fleet Console service owner for a two-hour window on 13 October. Raw sensor history and billing access remain outside the approved scope."
+      ]
+    },
+    {
+      "heading": "Evidence",
+      "paragraphs": [
+        "The requester records the grant ID, action performed, and validation screenshots in the restricted case. The access reviewer confirms expiry before closing ACC-662."
+      ]
+    }
+  ]
+}

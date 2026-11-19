@@ -1,0 +1,32 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "FIN-003",
+  "title": "Rotterdam spare sensor order",
+  "type": "Purchase record",
+  "owner": "Finance",
+  "issued": "2026-10-07",
+  "status": "Current",
+  "purchase_order": "PO-TW-624",
+  "currency": "EUR",
+  "amount": 2340,
+  "sections": [
+    {
+      "heading": "Order",
+      "paragraphs": [
+        "PO-TW-624. Vendor Arden Field Instruments. Purchase of 40 temperature probes and 10 spare cables for Rotterdam field stock. Total EUR 2,340."
+      ]
+    },
+    {
+      "heading": "Approvals",
+      "paragraphs": [
+        "Fleet Operations confirmed the stock forecast. Finance approved the quote on 6 October because the total exceeds the regional budget-owner threshold."
+      ]
+    },
+    {
+      "heading": "Delivery",
+      "paragraphs": [
+        "Deliver in two lots by 16 October. Fleet Operations will record serial numbers at receipt and hold any damaged items for the vendor to inspect."
+      ]
+    }
+  ]
+}

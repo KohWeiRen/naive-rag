@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "PRD-003",
+  "title": "Fourth quarter roadmap decision log",
+  "type": "Roadmap record",
+  "owner": "Product",
+  "issued": "2026-10-15",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Committed",
+      "paragraphs": [
+        "Release the gateway health panel pilot. Finish regional export cursor validation. Document new webhook diagnostics in Fleet Console help."
+      ]
+    },
+    {
+      "heading": "Deferred",
+      "paragraphs": [
+        "Delay multi-region tenant transfer until the residency exception flow has independent verification. Keep custom alert calendars in discovery until two customer pilots confirm need."
+      ]
+    },
+    {
+      "heading": "Review",
+      "paragraphs": [
+        "Owners review progress each Thursday. Changes in committed scope require an updated customer communication plan and a note in the release tracker."
+      ]
+    }
+  ]
+}

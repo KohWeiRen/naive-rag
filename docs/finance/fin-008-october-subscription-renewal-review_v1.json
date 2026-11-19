@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "FIN-008",
+  "title": "October subscription renewal review",
+  "type": "Monthly control record",
+  "owner": "Finance",
+  "issued": "2026-10-30",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Scope",
+      "paragraphs": [
+        "Finance reviewed software subscriptions due for renewal in November and December. Five renewals had confirmed owners. One monitoring tool needed an updated data handling review before approval."
+      ]
+    },
+    {
+      "heading": "Decision",
+      "paragraphs": [
+        "Renew approved subscriptions for the current seat count. Defer extra licenses until the owner provides active usage data. A vendor change that adds customer information follows SEC-004."
+      ]
+    },
+    {
+      "heading": "Follow-up",
+      "paragraphs": [
+        "The procurement coordinator updates the renewal register by 4 November and schedules reminders 45 days before each next renewal."
+      ]
+    }
+  ]
+}

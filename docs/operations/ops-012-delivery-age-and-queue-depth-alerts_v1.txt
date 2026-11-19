@@ -1,0 +1,10 @@
+DELIVERY AGE AND QUEUE DEPTH ALERTS
+
+Company: Ternwell Systems
+Document ID: OPS-012
+Type: Alert reference
+Owner: Site Reliability
+Issued: 2026-09-19
+Status: Current
+
+Queue depth counts jobs waiting for a worker. Queue age tracks how long the oldest waiting job has been pending. A small queue can still have an old stuck job. Compare both values by region before scaling workers. The delivery on-call owns the age alert. See OPS-002 for response steps.

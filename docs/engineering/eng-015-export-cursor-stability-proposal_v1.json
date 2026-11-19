@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "ENG-015",
+  "title": "Export cursor stability proposal",
+  "type": "Change proposal",
+  "owner": "Platform Engineering",
+  "issued": "2026-10-22",
+  "status": "Proposed",
+  "sections": [
+    {
+      "heading": "Problem",
+      "paragraphs": [
+        "Customer exports sorted only by a timestamp can skip a row when multiple readings share the same timestamp. Reproduced on a sandbox export containing 260 readings at the same second."
+      ]
+    },
+    {
+      "heading": "Proposal",
+      "paragraphs": [
+        "Use observed_at plus a stable reading ID as the ordering pair and encode both in the opaque cursor. Keep the public response contract. Readers continue to support previously issued cursors during a two-week transition."
+      ]
+    },
+    {
+      "heading": "Acceptance",
+      "paragraphs": [
+        "A pagination test must return every row exactly once while the dataset is unchanged. The owner will compare row counts across page sizes of 100 and 250."
+      ]
+    }
+  ]
+}

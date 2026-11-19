@@ -1,0 +1,10 @@
+CHANGING A BILLING CONTACT
+
+Company: Ternwell Systems
+Document ID: CS-011
+Type: FAQ
+Owner: Customer Enablement
+Issued: 2026-10-09
+Status: Current
+
+A tenant administrator can update the billing contact from Fleet Console settings. Finance verifies the new address before the next invoice run. Open a support case for a change to the contracting entity or tax registration. The billing contact can receive invoices without access to telemetry.

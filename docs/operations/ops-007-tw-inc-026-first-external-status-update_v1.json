@@ -1,0 +1,32 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "OPS-007",
+  "title": "TW-INC-026 first external status update",
+  "type": "Incident update",
+  "owner": "Site Reliability",
+  "issued": "2026-09-18",
+  "status": "Current",
+  "incident_id": "TW-INC-026",
+  "region": "EU",
+  "published_at": "2026-09-18T02:29:00Z",
+  "sections": [
+    {
+      "heading": "Published",
+      "paragraphs": [
+        "02:29 UTC on 18 September 2026. Status investigating. Affected region EU. Affected component webhook delivery."
+      ]
+    },
+    {
+      "heading": "Message",
+      "paragraphs": [
+        "Some EU webhook deliveries are taking longer than expected. Device readings are being received and remain visible in Fleet Console. Engineers are investigating the delivery queue. We will post another update by 02:59 UTC."
+      ]
+    },
+    {
+      "heading": "Internal routing",
+      "paragraphs": [
+        "Communications owner Marta de Vries. Technical owner Jian Koh. Use OPS-003 for the final scope and timeline."
+      ]
+    }
+  ]
+}

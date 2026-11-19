@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gateway firmware 2.8.1 release notes | Ternwell Systems</title>
+<style>body{font:16px/1.55 system-ui,sans-serif;color:#183042;background:#f5f8fa;margin:0;padding:2rem}main{max-width:48rem;margin:auto;background:white;padding:2rem;border-top:5px solid #126d66}h1,h2{line-height:1.2}dt{font-weight:600}dd{margin:0 0 .55rem}</style>
+</head><body><main>
+<header><h1>Gateway firmware 2.8.1 release notes</h1><dl>
+<dt>Company</dt><dd>Ternwell Systems</dd>
+<dt>Document ID</dt><dd>ENG-012</dd>
+<dt>Type</dt><dd>Release notes</dd>
+<dt>Owner</dt><dd>Fleet Engineering</dd>
+<dt>Issued</dt><dd>2026-09-21</dd>
+<dt>Status</dt><dd>Published</dd>
+</dl></header><article>
+<section>
+<h2>Changes</h2>
+<p>Firmware 2.8.1 improves reconnect behavior when a gateway switches between cellular and wired uplinks. It increases the visibility of clock synchronization failures in Fleet Console and updates certificate renewal diagnostics.</p>
+</section>
+<section>
+<h2>Rollout</h2>
+<p>Pilot the update on one device per site. Verify connectivity for 30 minutes and confirm that queued samples backfill. Continue with the remainder of the site when the pilot device stays healthy. Gateways on the isolated exception in SEC-013 follow their own approval schedule.</p>
+</section>
+<section>
+<h2>Known issue</h2>
+<p>A device can briefly appear offline during reboot. If no readings arrive after 10 minutes, check power and link status before opening a firmware rollback request.</p>
+</section>
+</article></main></body></html>

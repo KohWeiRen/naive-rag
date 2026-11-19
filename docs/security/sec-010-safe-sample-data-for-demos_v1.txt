@@ -1,0 +1,10 @@
+SAFE SAMPLE DATA FOR DEMOS
+
+Company: Ternwell Systems
+Document ID: SEC-010
+Type: FAQ
+Owner: Security
+Issued: 2026-09-30
+Status: Current
+
+Use the Wayline demo tenant and synthetic device names during demos. A demo export may contain fictitious trips, sensors, sites, and customer accounts. If a troubleshooting case needs a real customer payload, copy the minimum necessary fields to the restricted case. Remove tokens, personal contact details, and location coordinates unless the case owner has approved their use.

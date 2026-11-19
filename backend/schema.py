@@ -4,6 +4,5 @@ from typing import Literal
 @dataclass(frozen=True)
 class SearchPlanningPolicy:
     max_search_queries: int
-    token_limit: int
-    oversize_output: Literal["split", "clarify"]
-    max_planner_calls: int = 1,
+    max_token_output: int = 2048
+    max_planner_calls: int = 1

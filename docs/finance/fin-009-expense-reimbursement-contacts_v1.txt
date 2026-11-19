@@ -1,0 +1,10 @@
+EXPENSE REIMBURSEMENT CONTACTS
+
+Company: Ternwell Systems
+Document ID: FIN-009
+Type: Quick reference
+Owner: Finance
+Issued: 2026-08-16
+Status: Current
+
+For expense corrections, send the claim ID to the Finance help desk. For a learning allowance eligibility question, contact People Operations first and include the course category. For urgent corporate card loss, contact the card issuer through the emergency number in the portal and file a restricted Finance ticket.

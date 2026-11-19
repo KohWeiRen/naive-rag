@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "GOV-006",
+  "title": "Retention drift in test export bucket",
+  "type": "Risk register record",
+  "owner": "Privacy and Governance",
+  "issued": "2026-10-23",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Finding",
+      "paragraphs": [
+        "Risk RR-047. An isolated test export bucket lacked the approved expiry tag. The bucket contained synthetic data used in an integration exercise."
+      ]
+    },
+    {
+      "heading": "Mitigation",
+      "paragraphs": [
+        "Add a configuration check that rejects export buckets without an expiry setting. Review the exception list after the change deploys in both service regions."
+      ]
+    },
+    {
+      "heading": "Ownership",
+      "paragraphs": [
+        "Data Engineering owns remediation. Security verifies the control. The target review date is 16 November."
+      ]
+    }
+  ]
+}

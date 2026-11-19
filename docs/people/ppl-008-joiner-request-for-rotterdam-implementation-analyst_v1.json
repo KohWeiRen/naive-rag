@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "PPL-008",
+  "title": "Joiner request for Rotterdam implementation analyst",
+  "type": "Ticket",
+  "owner": "People Operations",
+  "issued": "2026-10-06",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Request",
+      "paragraphs": [
+        "Ticket HRQ-418. Rosa van Dijk joins the Customer Enablement team on 12 October. The manager requested a managed laptop, a corporate mailbox, the support knowledge base, and a seat in the Wayline demo tenant."
+      ]
+    },
+    {
+      "heading": "Decision",
+      "paragraphs": [
+        "Approve standard employee access and customer sandbox access. The manager will submit a separate, time-limited request if production tenant access becomes necessary."
+      ]
+    },
+    {
+      "heading": "Handoff",
+      "paragraphs": [
+        "IT will hand over the laptop in Rotterdam at 09:30 local time. Buddy Marta de Vries will run the demo tenant walkthrough and confirm account setup by the end of day one."
+      ]
+    }
+  ]
+}

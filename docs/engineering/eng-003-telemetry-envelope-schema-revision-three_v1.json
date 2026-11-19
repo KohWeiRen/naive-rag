@@ -1,0 +1,48 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "ENG-003",
+  "title": "Telemetry envelope schema revision three",
+  "type": "Contract",
+  "owner": "Platform Engineering",
+  "issued": "2026-09-17",
+  "status": "Current",
+  "schema": "telemetry.v3",
+  "max_batch_size": 100,
+  "required_fields": [
+    "tenant_id",
+    "device_id",
+    "event_id",
+    "observed_at",
+    "readings"
+  ],
+  "reading_fields": [
+    "metric",
+    "value",
+    "unit"
+  ],
+  "compatibility_alias": {
+    "from": "sample_time",
+    "to": "observed_at",
+    "through": "2026-11-30"
+  },
+  "sections": [
+    {
+      "heading": "Envelope",
+      "paragraphs": [
+        "Schema telemetry.v3 has required fields tenant_id, device_id, event_id, observed_at, and readings. Each reading includes metric, value, and unit. Observed_at is an RFC 3339 UTC timestamp. Received_at is set by the server and ignored if supplied by a gateway."
+      ]
+    },
+    {
+      "heading": "Validation",
+      "paragraphs": [
+        "Temperature readings are reported in Celsius. Relative humidity uses percent. Reject unknown metrics in production and return a per-event validation result. A batch can contain at most 100 readings."
+      ]
+    },
+    {
+      "heading": "Compatibility",
+      "paragraphs": [
+        "V3 readers continue to accept the v2 alias sample_time through 30 November 2026. The compatibility path records an alias counter. Publishers update firmware before the removal window in ENG-007."
+      ]
+    }
+  ]
+}

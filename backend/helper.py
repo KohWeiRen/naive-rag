@@ -1,12 +1,20 @@
 from dotenv import load_dotenv
 import os
 from typing import TypeVar
+from pathlib import Path
 
-load_dotenv()
 T = TypeVar("T")
 
-def retrieve_val_from_env(env_name: str, default_val: T) -> T:
-    raw_val = os.getenv(env_name)
+def retrieve_val_from_env(env_name: str, default_val: T, path: Path = Path(__file__).resolve().parent / ".env") -> T:
+    # if not path.exists:
+    #     raise f".env file at path: {path} does not exist! Unable to access secrets"
+    
+    try:
+        load_dotenv(path)
+    except Exception:
+        print(f".env file at path: {path} does not exist! Unable to access secrets")
+    
+    raw_val = os.getenv(env_name, "")
     
     if not raw_val:
         return default_val

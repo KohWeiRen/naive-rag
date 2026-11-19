@@ -1,0 +1,35 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "OPS-011",
+  "title": "Dispatcher queue age rollout gate",
+  "type": "Change record",
+  "owner": "Site Reliability",
+  "issued": "2026-10-02",
+  "status": "Current",
+  "change_id": "CHG-731",
+  "incident_id": "TW-INC-026",
+  "regions": [
+    "EU",
+    "Singapore"
+  ],
+  "sections": [
+    {
+      "heading": "Change",
+      "paragraphs": [
+        "CHG-731 adds EU and Singapore delivery queue age as separate release gates. A five-minute oldest job age for 10 consecutive minutes halts promotion and pages the duty operator."
+      ]
+    },
+    {
+      "heading": "Verification",
+      "paragraphs": [
+        "Injected a stalled endpoint in sandbox. The release controller stopped promotion and generated a page for the sandbox owner. Ingest accepted the synthetic telemetry batch during the stalled delivery."
+      ]
+    },
+    {
+      "heading": "Status",
+      "paragraphs": [
+        "Released on 2 October. Linked to TW-INC-026 and OPS-004."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "CS-003",
+  "title": "Northmere Produce gateway swap case",
+  "type": "Case note",
+  "owner": "Customer Enablement",
+  "issued": "2026-10-26",
+  "status": "Current",
+  "case_id": "CSQ-712",
+  "tenant": "Northmere Produce",
+  "region": "EU",
+  "site": "Cedar Dock 2",
+  "sections": [
+    {
+      "heading": "Case",
+      "paragraphs": [
+        "CSQ-712. Tenant Northmere Produce. Region EU. Site Cedar Dock 2. One gateway dropped off the network at 07:42 UTC on 26 October."
+      ]
+    },
+    {
+      "heading": "Progress",
+      "paragraphs": [
+        "The site checked power and swapped the Ethernet cable. Other gateways at the site stayed online. Fleet Operations authorized a spare using OPS-008. The original unit is in the return kit with the case ID attached."
+      ]
+    },
+    {
+      "heading": "Next update",
+      "paragraphs": [
+        "Customer Enablement will send a progress update after the first live reading. Preserve the old gateway assignment until Fleet Engineering confirms reset and closes the asset record."
+      ]
+    }
+  ]
+}

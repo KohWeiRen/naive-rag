@@ -1,0 +1,10 @@
+CHANGING DASHBOARD TEMPERATURE UNITS
+
+Company: Ternwell Systems
+Document ID: PRD-005
+Type: FAQ
+Owner: Product
+Issued: 2026-09-21
+Status: Current
+
+Open Settings, then Display Preferences, and choose Celsius or Fahrenheit. This changes displayed charts and tables for your user. Alert profiles and API readings still store Celsius values. When sharing a screenshot, include the displayed unit so reviewers can interpret the chart.

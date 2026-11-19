@@ -1,0 +1,10 @@
+MONDAY ON-CALL HANDOFF
+
+Company: Ternwell Systems
+Document ID: OPS-005
+Type: Handoff
+Owner: Site Reliability
+Issued: 2026-10-26
+Status: Current
+
+Singapore and EU ingest are healthy. Watch the EU dispatcher queue after the maintenance window at 22:00 UTC. The Northmere Produce pilot has one pending gateway swap. Support owns customer communication and should use case CSQ-712. The next backup restore exercise is scheduled for Thursday at 08:00 UTC.

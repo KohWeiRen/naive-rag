@@ -1,0 +1,29 @@
+{
+  "company": "Ternwell Systems",
+  "document_id": "SEC-013",
+  "title": "Lab gateway firmware exception",
+  "type": "Exception record",
+  "owner": "Security",
+  "issued": "2026-09-23",
+  "status": "Current",
+  "sections": [
+    {
+      "heading": "Request",
+      "paragraphs": [
+        "Exception SE-091 permits one isolated Rotterdam lab gateway to run firmware 2.7.6 through 15 November while the hardware team reproduces a serial-port fault."
+      ]
+    },
+    {
+      "heading": "Controls",
+      "paragraphs": [
+        "Keep the gateway on the lab VLAN, use the test certificate authority, and block external telemetry. The device must carry a red exception tag with its owner and expiry."
+      ]
+    },
+    {
+      "heading": "Closure",
+      "paragraphs": [
+        "Replace the lab image after reproducing the fault. Hardware Operations verifies that the gateway can enroll with the supported firmware before the exception is closed."
+      ]
+    }
+  ]
+}

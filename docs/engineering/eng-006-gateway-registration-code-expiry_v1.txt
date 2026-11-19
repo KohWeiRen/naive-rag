@@ -1,0 +1,10 @@
+GATEWAY REGISTRATION CODE EXPIRY
+
+Company: Ternwell Systems
+Document ID: ENG-006
+Type: Troubleshooting note
+Owner: Fleet Engineering
+Issued: 2026-10-14
+Status: Current
+
+A Wayline gateway registration code expires 24 hours after creation and can be used once. Generate a replacement in Fleet Console under Devices, then Enroll gateway. For a gateway with an active assignment, use the transfer flow in ENG-016. If a new code still fails, record the gateway serial, tenant region, and the displayed error.

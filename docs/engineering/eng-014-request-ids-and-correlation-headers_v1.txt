@@ -1,0 +1,10 @@
+REQUEST IDS AND CORRELATION HEADERS
+
+Company: Ternwell Systems
+Document ID: ENG-014
+Type: Reference
+Owner: Platform Engineering
+Issued: 2026-09-30
+Status: Current
+
+Wayline includes X-Request-ID on API responses. Include it with the UTC timestamp, region, and endpoint when opening a platform issue. For a webhook event, include the delivery ID and attempt number. The request ID identifies a single HTTP request. The delivery ID remains stable across retries.

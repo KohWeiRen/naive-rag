@@ -1,0 +1,10 @@
+SINGAPORE OFFICE MAINTENANCE NOTICE
+
+Company: Ternwell Systems
+Document ID: PPL-010
+Type: Announcement
+Owner: People Operations
+Issued: 2026-10-20
+Status: Current
+
+The Singapore office will have no wired network from 19:00 to 22:00 SGT on Friday 23 October. Staff finishing late may use the managed Wi-Fi in the meeting rooms until 20:00. Leave test devices connected to the marked lab switch. The site coordinator will confirm restoration in the office notices channel on Saturday morning.

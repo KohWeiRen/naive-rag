@@ -1,0 +1,10 @@
+PEOPLE PORTAL QUICK ANSWERS
+
+Company: Ternwell Systems
+Document ID: PPL-012
+Type: FAQ
+Owner: People Operations
+Issued: 2026-10-02
+Status: Current
+
+The People Portal handles leave balances, personal details, and emergency contacts. For a payroll correction, open a restricted payroll ticket and attach the affected statement. Submit office equipment requests in the IT help desk. Managers can delegate leave approvals for up to 30 calendar days through the portal settings. Ask People Operations if a historic balance differs from your approval records.
