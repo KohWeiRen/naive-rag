@@ -32,6 +32,7 @@ CREATE INDEX IF NOT EXISTS document_chunks_hnsw_idx ON document_chunks USING hns
 
 CREATE TABLE IF NOT EXISTS sessions(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
     start_time TIMESTAMPTZ NOT NULL DEFAULT now(),
     end_time TIMESTAMPTZ 
 );

@@ -3,13 +3,13 @@ from pgvector.psycopg import register_vector
 from pgvector import Vector
 from getpass import getpass
 from pathlib import Path
+from backend.helper import retrieve_val_from_env
 
 def get_connection():
-    return psycopg.connect(host="127.0.0.1",
-        port=5433,
-        dbname="rag",
-        user="rag",
-        password=getpass("Database password: "))
+    database_url = retrieve_val_from_env("DATABASE_URL", "")
+    if not database_url:
+        raise RuntimeError("Set DATABASE_URL before starting the app!")
+    return psycopg.connect(database_url, connect_timeout=5)
     
 def init_db():
     connection = get_connection()
@@ -33,6 +33,25 @@ def get_document(connection, source_key : str):
             """,
             (source_key,),
         ).fetchone()
+
+def get_session(connection, session_id):
+    with connection.transaction():
+        return connection.execute("""
+                                  SELECT id, user_id 
+                                  FROM sessions
+                                  WHERE id = %s
+                                  """,
+                                  (session_id,)).fetchone()
+
+def get_session_messages(connection, session_id):
+    with connection.transaction():
+        return connection.execute("""
+                                  SELECT message_index, message_role, content
+                                  FROM session_messages
+                                  WHERE session_id = %s
+                                  ORDER BY created_at ASC
+                                  """,
+                                  (session_id,)).fetchall()
 
 def upsert_document_in_db(connection, source_key, file_path, title, source_version, content_hash):
     """Return the document ID when a new or newer version is saved."""
@@ -87,7 +106,10 @@ def replace_document_and_chunks(
     return document_id
 
 def insert_session_in_db(connection):
-    row = connection.execute("INSERT INTO sessions DEFAULT VALUES RETURNING id").fetchone()
+    row = connection.execute("""
+                             INSERT INTO sessions DEFAULT VALUES 
+                             RETURNING id
+                             """).fetchone()
     connection.commit()
     return row[0]
 
@@ -130,6 +152,13 @@ def search_by_keyword(connection, query, limit=20):
                               """,
                               (query, query, limit)).fetchall()
     
+def migrate_sessions(connection):
+    with connection.transaction():
+        connection.execute("""
+                           ALTER TABLE sessions
+                           ADD COLUMN IF NOT EXISTS user_id UUID
+                           """)
+    
 if __name__ == "__main__":
-    connection = init_db()
-    connection.commit()
+    with init_db() as connection:
+        migrate_sessions(connection=connection)

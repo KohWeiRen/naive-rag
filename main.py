@@ -1,13 +1,14 @@
 from pathlib import Path
 from backend.extractor import extract_text_from_file
 from backend.ingest import calculate_file_hash, identify_document, save_document
-from backend.database.db import init_db, get_document, update_session_in_db, insert_session_message_in_db, insert_session_in_db
+from backend.database.db import init_db, get_document, update_session_in_db, insert_session_message_in_db, insert_session_in_db, get_session, get_session_messages
 import os, json, time
 from backend.helper import retrieve_val_from_env
 
 from backend.schema import SearchPlanningPolicy
 from backend.ingest import prepare_search_plan, retrieve_candidates, rank_chunks_with_rrf, load_instructions
 from backend.models.driver import call_llm
+from fastapi import HTTPException
 
 max_loop = retrieve_val_from_env("LOOP_LIMIT", 5)
 model = retrieve_val_from_env("OPENCODE_MODEL", "deepseek-v4.1-flash")
@@ -45,7 +46,7 @@ def ingestion():
                     continue
                 save_document(connection, text, source_key, file_path, file_path.stem, source_version, curr_hash)
 
-
+# if using terminal
 def chat():
     with init_db() as connection:
         print("Starting a new query session: ")
@@ -115,6 +116,65 @@ def chat():
             message_index += 1
             print(answer)
         
+        update_session_in_db(connection=connection, session_id=session_id)
+
+def chat_and_run(query: str, session_id):
+    with init_db() as connection:
+        messages = []
+        if session_id is None:
+            session_id = insert_session_in_db(connection=connection)
+            message_index = 1
+        else:
+            session = get_session(connection=connection, session_id=session_id)
+            if session is None:
+                raise HTTPException(status_code=404, detail="Session ID not found!")
+            message_rows = get_session_messages(connection=connection, session_id=session_id)
+            message_index = message_rows[-1][0] + 1 # message rows return a tuple of  (message_index, message_role, message_content) in asc order. last message has latest message index and index 0 is message index
+            # reconstruct history
+            for _, role, content in message_rows:
+                messages.append({"role": role, "content": content})
+        
+        
+        current_query = {"role": "user", "content": query}
+        insert_session_message_in_db(connection=connection, session_id=session_id, message_index=message_index, message_role=current_query["role"], message_content=query)
+        message_index += 1
+        plan = prepare_search_plan(session_id=session_id, query=current_query, history=messages, policy=searchPlanningPolicy)
+        
+        if plan["status"] == "needs_clarification":
+            clarification = plan["clarification_question"].strip()
+            insert_session_message_in_db(connection, session_id, message_index, "assistant", clarification)
+            # update_session_in_db(connection=connection, session_id=session_id)
+            return {"session_id": session_id, "content": clarification} # ask the clarification question
+            
+        ranked_lists = retrieve_candidates(connection=connection, search_dict=plan)
+        chunks = rank_chunks_with_rrf(ranked_lists)
+        
+        payload = {
+            "current_query" : current_query["content"],
+            "history": messages,
+            "sources": [{"source_id": f"S{i}", "content": chunk["content"]} for i, chunk in enumerate(chunks, start=1)]
+        }
+        
+        # for inference
+        inference_start = time.perf_counter()
+        response = call_llm(
+            messages=[
+                {
+                    "role" : "system", "content" : load_instructions(task="query_answering")
+                },
+                {
+                    "role" : "user", "content" : json.dumps(payload)
+                }
+            ], # insert instruction, current query, past history and limits
+            max_output_tokens=2048,
+            session_id=session_id
+        )
+        
+        answer = response["content"]
+        insert_session_message_in_db(connection=connection, session_id=session_id, message_index=message_index, message_role="assistant", message_content=answer)
+        # update_session_in_db(connection=connection, session_id=session_id)
+        
+        return {"session_id": session_id, "content": answer}
 
 def main():
     while True:
