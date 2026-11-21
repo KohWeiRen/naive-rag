@@ -1,5 +1,10 @@
 CREATE EXTENSION IF NOT EXISTS vector;
 
+CREATE TABLE IF NOT EXISTS users(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    google_sub VARCHAR(255) NOT NULL UNIQUE
+);
+
 CREATE TABLE IF NOT EXISTS documents (
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             source_key TEXT NOT NULL UNIQUE,
@@ -9,13 +14,6 @@ CREATE TABLE IF NOT EXISTS documents (
             content_hash VARCHAR(255) NOT NULL,
             updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
-
--- CREATE TABLE IF NOT EXISTS documents_metadata(
---     document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
---     metadata_key VARCHAR(255) NOT NULL,
---     metadata_value TEXT NOT NULL,
---     PRIMARY KEY (document_id, metadata_key)
--- );
 
 CREATE TABLE IF NOT EXISTS document_chunks(
     document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
@@ -32,7 +30,7 @@ CREATE INDEX IF NOT EXISTS document_chunks_hnsw_idx ON document_chunks USING hns
 
 CREATE TABLE IF NOT EXISTS sessions(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     start_time TIMESTAMPTZ NOT NULL DEFAULT now(),
     end_time TIMESTAMPTZ 
 );

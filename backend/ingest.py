@@ -11,8 +11,8 @@ from backend.embedder import embed, chunker, tokenize, get_embedder_model_max_se
 from backend.helper import retrieve_val_from_env
 from backend.schema import SearchPlanningPolicy
 from backend.extractor import extract_text_from_md_and_txt
-from backend import schema
 from backend.models.driver import call_llm
+from backend.misc.logger import logger
 
 ############################ variables ###############################
 model = retrieve_val_from_env("OPENCODE_MODEL", "deepseek-v4.1-flash")
@@ -82,10 +82,8 @@ def save_document(connection, text, source_key, file_path, title, source_version
     return document_id
         
 def prepare_search_plan(session_id, query, history : list[dict] = [], policy: SearchPlanningPolicy = SearchPlanningPolicy):
-    def calculate_elapsed_time(start, end, text):
-        print(f"Elapsed: {end - start} for {text}")
-        
-    function_start = time.perf_counter()
+    start = time.perf_counter()
+    logger.info("Starting plan preparation")
     task = "query_processing"
     
     limit = get_embedder_model_max_seg_length()
@@ -109,7 +107,6 @@ def prepare_search_plan(session_id, query, history : list[dict] = [], policy: Se
         }
         
         # for decomposition and rewriting
-        inference_start = time.perf_counter()
         response = call_llm(
             messages=[
                 {
@@ -122,19 +119,21 @@ def prepare_search_plan(session_id, query, history : list[dict] = [], policy: Se
             max_output_tokens=policy.max_token_output,
             session_id=session_id
         )
-        calculate_elapsed_time(inference_start, time.perf_counter(), "Inference")
+
         
         if not isinstance(response, dict):
+            logger.error(f"Elapsed {time.perf_counter() - start}. Status: Error! LLM returned invalid output!")
             raise ValueError("Error! LLM returned invalid output!")
         
         content = json.loads(response["content"])
         
         if not isinstance(content, dict):
+            logger.error(f"Elapsed {time.perf_counter() - start}. Status: Error! Planner output must be a json object!")
             raise ValueError("Planner output must be a json object!")
         
         clarification = content.get("clarification_question", "") # llm has some clarifications to make
         if clarification:
-            calculate_elapsed_time(function_start, time.perf_counter(), "Clarification")
+            logger.info(f"Elapsed {time.perf_counter() - start}. Status: Returning with clarification")
             return {"status": "needs_clarification", "search_text": [], "vectors": [], "clarification_question": clarification}
         
         rewritten = content.get("rewritten_query", "").strip()
@@ -158,17 +157,22 @@ def prepare_search_plan(session_id, query, history : list[dict] = [], policy: Se
         elif fits([rewritten]):
             search_texts = [rewritten]
         else:
-            calculate_elapsed_time(function_start, time.perf_counter(), "Clarification")
+            logger.info(f"Elapsed {time.perf_counter() - start}. Status: Returning with clarification")
             return {"status": "needs_clarification", "search_text": [], "vectors": [], "clarification_question": "Could you narrow your request to one or two specific questions?"}
     
     vectors = embed(search_texts)
-    calculate_elapsed_time(function_start, time.perf_counter(), "function end")
+
+    logger.info(f"Elapsed {time.perf_counter() - start}. Status: Successful parse")
     return {"status": "ready", "search_text": search_texts, "vectors": vectors, "clarification_question": None}
 
 def retrieve_candidates(connection, search_dict: dict, limit=20):
+    start = time.perf_counter()
+    logger.info("Start of candidate retrieval")
+    
     ranked_list = []
     if not isinstance(search_dict, dict):
-        print("Empty dictionary! Returning empty list...")
+        logger.warning("Empty dictionary! Returning empty list...")
+        # print("Empty dictionary! Returning empty list...")
         return ranked_list
     
     search_texts = search_dict.get("search_text")
@@ -178,10 +182,13 @@ def retrieve_candidates(connection, search_dict: dict, limit=20):
         for text, vector in zip(search_texts, search_vectors, strict=True):
             ranked_list.append(search_by_keyword(connection, text, limit=limit))
             ranked_list.append(search_by_vector(connection, vector, limit=limit))
-        
+    
+    logger.info(f"end of candidate retrieval. Elapsed: {time.perf_counter() - start}")
     return ranked_list
     
 def rank_chunks_with_rrf(ranked_list, k=60, top=8):
+    start = time.perf_counter()
+    logger.info("Start of rrf ranking")
     
     rrf_scores = {}
     for hits in ranked_list:
@@ -197,5 +204,7 @@ def rank_chunks_with_rrf(ranked_list, k=60, top=8):
                 }
 
             rrf_scores[key]["rrf_score"] += 1 / (k + rank)
-            
+    
+    
+    logger.info(f"End of rrf ranking. Elapsed: {time.perf_counter()-start}")
     return sorted(rrf_scores.values(), key=lambda item: item["rrf_score"], reverse=True)[:top]

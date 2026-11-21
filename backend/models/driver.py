@@ -5,6 +5,7 @@ from backend.models.opencode import (
     )
 from backend.helper import retrieve_val_from_env
 import time
+from backend.misc.logger import logger
 
 providers = {}
 providers["opencode"] = {"create_client": create_opencode_client, "send": opencode_send_for_inference, "model" : retrieve_val_from_env("OPENCODE_MODEL", "deepseek-v4.1-flash")} 
@@ -13,19 +14,22 @@ providers["opencode"] = {"create_client": create_opencode_client, "send": openco
 clients = {}
 
 def call_llm(messages: list[dict], max_output_tokens, session_id):
+    logger.info(f"Starting inference call")
+    start = time.perf_counter()
     latest_error= None
     
     for provider_name, config_info in providers.items():
         try:
             client = get_client(provider_name)
-            return config_info["send"](
+            response = config_info["send"](
                 client=client,
                 model=config_info["model"],
                 messages=messages,
                 max_output_tokens=max_output_tokens,
                 session_id=session_id
             )
-        
+            logger.info(f"Ending inference call. Elapsed {time.perf_counter() - start}")
+            return response
         except APIConnectionError as e:
             latest_error = e
         except APIStatusError as e:

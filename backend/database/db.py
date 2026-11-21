@@ -113,7 +113,7 @@ def insert_session_in_db(connection):
     connection.commit()
     return row[0]
 
-def update_session_in_db(connection, session_id):
+def update_session_endtime_in_db(connection, session_id):
     connection.execute("""UPDATE sessions
                        SET end_time = now()
                        WHERE id = %s
@@ -121,6 +121,15 @@ def update_session_in_db(connection, session_id):
                        (session_id,)
                        )
     connection.commit()
+    
+def update_session_userid_in_db(user_id, google_sub):
+    with get_connection() as connection:
+        return connection.execute("""UPDATE sessions
+                        SET end_time = %s
+                        WHERE google_sub = %s
+                        """,
+                        (user_id, google_sub)
+                        ).fetchone()
     
 def insert_session_message_in_db(connection, session_id, message_index, message_role, message_content):
     connection.execute("""
@@ -151,14 +160,30 @@ def search_by_keyword(connection, query, limit=20):
                               LIMIT %s
                               """,
                               (query, query, limit)).fetchall()
-    
+
+def get_or_create_google_user(google_sub:str):
+    with get_connection() as connection:
+        row = connection.execute("""
+                                 INSERT INTO users (google_sub)
+                                 VALUES (%s)
+                                 ON CONFLICT (google_sub)
+                                 DO UPDATE SET google_sub = EXCLUDED.google_sub
+                                 RETURNING id
+                                 """,
+                                 (google_sub,)
+                                ).fetchone()
+    return row[0] 
+
+
+
 def migrate_sessions(connection):
     with connection.transaction():
         connection.execute("""
                            ALTER TABLE sessions
-                           ADD COLUMN IF NOT EXISTS user_id UUID
+                           ADD CONSTRAINTS session_user_id_fkey
+                           FOREIGN KEY (user_id) REFERENCES users(id)
                            """)
-    
+
 if __name__ == "__main__":
     with init_db() as connection:
         migrate_sessions(connection=connection)
