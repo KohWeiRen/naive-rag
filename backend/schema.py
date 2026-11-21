@@ -10,6 +10,5 @@ class SearchPlanningPolicy:
     max_planner_calls: int = 1
     
 class ChatRequest(BaseModel):
-    user_id: uuid.UUID | None = None
     session_id: uuid.UUID | None = None
     query: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]

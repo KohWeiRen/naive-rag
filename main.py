@@ -56,7 +56,7 @@ def ingestion():
 def chat():
     with init_db() as connection, ExitStack() as log_context:
         print("Starting a new query session: ")
-        session_id = insert_session_in_db(connection)
+        session_id = insert_session_in_db(connection, user_id=None)
         log_context.enter_context(log_chat_session(session_id))
         messages = []
         message_index = 1
@@ -123,21 +123,21 @@ def chat():
         
         update_session_endtime_in_db(connection=connection, session_id=session_id)
 
-def chat_and_run(query: str, session_id):
+def chat_and_run(query: str, session_id, user_id):
     start = time.perf_counter()
     logger.info("Start of chat and run")
     with init_db() as connection, ExitStack() as log_context:
         messages = []
         if session_id is None:
-            session_id = insert_session_in_db(connection=connection)
+            session_id = insert_session_in_db(connection=connection, user_id=user_id)
             message_index = 1
         else:
-            session = get_session(connection=connection, session_id=session_id)
+            session = get_session(connection=connection, session_id=session_id, user_id=user_id)
             if session is None:
-                logger.error("Session ID %s not found", session_id)
-                raise HTTPException(status_code=404, detail="Session ID not found!")
+                logger.error("Session ID %s with user id %s not found", session_id, user_id)
+                raise HTTPException(status_code=404, detail="Session ID with User ID not found!")
             message_rows = get_session_messages(connection=connection, session_id=session_id)
-            message_index = message_rows[-1][0] + 1 # message rows return a tuple of  (message_index, message_role, message_content) in asc order. last message has latest message index and index 0 is message index
+            message_index = message_rows[-1][0] + 1 if message_rows else 1 # message rows return a tuple of  (message_index, message_role, message_content) in asc order. last message has latest message index and index 0 is message index
             # reconstruct history
             for _, role, content in message_rows:
                 messages.append({"role": role, "content": content})

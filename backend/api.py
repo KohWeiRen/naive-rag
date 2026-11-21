@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from backend.schema import ChatRequest
 from main import chat_and_run
 from pathlib import Path
@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from starlette.middleware.sessions import SessionMiddleware
 from backend.auth import router as auth_router
 from backend.helper import retrieve_val_from_env
+from uuid import UUID
 
 app = FastAPI()
 session_secret = retrieve_val_from_env("SESSION_SECRET", "")
@@ -18,8 +19,12 @@ app.include_router(auth_router)
 project_root = Path(__file__).resolve().parents[1]
 
 @app.post("/chat")
-def receive(request: ChatRequest):
-    return chat_and_run(request.query, request.session_id)
+def receive(payload: ChatRequest, request: Request):
+    user_id = request.session.get("user_id")
+    if user_id is None:
+        raise HTTPException(401, "Sign in first.")
+    
+    return chat_and_run(payload.query, payload.session_id, user_id=UUID(user_id))
 
 @app.get("/")
 def chat_page():

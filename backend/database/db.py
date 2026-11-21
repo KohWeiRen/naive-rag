@@ -34,14 +34,14 @@ def get_document(connection, source_key : str):
             (source_key,),
         ).fetchone()
 
-def get_session(connection, session_id):
+def get_session(connection, session_id, user_id):
     with connection.transaction():
         return connection.execute("""
-                                  SELECT id, user_id 
+                                  SELECT id, user_id
                                   FROM sessions
-                                  WHERE id = %s
+                                  WHERE id = %s AND user_id = %s
                                   """,
-                                  (session_id,)).fetchone()
+                                  (session_id,user_id)).fetchone()
 
 def get_session_messages(connection, session_id):
     with connection.transaction():
@@ -49,7 +49,7 @@ def get_session_messages(connection, session_id):
                                   SELECT message_index, message_role, content
                                   FROM session_messages
                                   WHERE session_id = %s
-                                  ORDER BY created_at ASC
+                                  ORDER BY message_index ASC
                                   """,
                                   (session_id,)).fetchall()
 
@@ -105,11 +105,12 @@ def replace_document_and_chunks(
 
     return document_id
 
-def insert_session_in_db(connection):
+def insert_session_in_db(connection, user_id):
     row = connection.execute("""
-                             INSERT INTO sessions DEFAULT VALUES 
+                             INSERT INTO sessions (user_id) VALUES (%s) 
                              RETURNING id
-                             """).fetchone()
+                             """,
+                             (user_id,)).fetchone()
     connection.commit()
     return row[0]
 
