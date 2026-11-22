@@ -1,0 +1,321 @@
+{
+    "eval_1": {
+        "question": "What is the leave policy for the company?",
+        "expected_answer": "Baseline of 18 paid annual leave for a full calendar year or whatever local laws entitle.",
+        "expected_source": "docs/people/ppl-001-annual-leave-and-holiday-policy_v1.pdf",
+        "expected_evidence": [
+            "The company baseline is 18 paid annual leave days for a full calendar year.",
+            "Local statutory or contractual terms take precedence wherever they provide a higher entitlement."
+        ]
+    },
+    "eval_2": {
+        "question": "What is about part timers?",
+        "expected_answer": "Annual leave for part-time staff is prorated through payroll.",
+        "expected_source": "docs/people/ppl-001-annual-leave-and-holiday-policy_v1.pdf",
+        "expected_evidence": "Leave for part-time staff and joiners is prorated through payroll.",
+        "history": [
+            {
+                "role": "user",
+                "content": "What is the leave policy for the company?"
+            },
+            {
+                "role": "assistant",
+                "content": "The company baseline is 18 paid annual leave days for a full calendar year. Higher local statutory or contractual entitlements take precedence."
+            }
+        ]
+    },
+    "eval_3": {
+        "question": "Who approves them?",
+        "expected_answer": "Managers approve time away using the portal",
+        "expected_source": "docs/people/ppl-001-annual-leave-and-holiday-policy_v1.pdf",
+        "expected_evidence": "Managers approve time away in the portal and coordinate any coverage in the team calendar.",
+        "history": [
+            {
+                "role": "user",
+                "content": "What is the leave policy for the company?"
+            },
+            {
+                "role": "assistant",
+                "content": "The company baseline is 18 paid annual leave days for a full calendar year. Higher local statutory or contractual entitlements take precedence."
+            },
+            {
+                "role": "user",
+                "content": "What is about part timers?"
+            },
+            {
+                "role": "assistant",
+                "content": "Part-time staff's annual leave is prorated through payroll. They submit leave requests in the People Portal."
+            }
+        ]
+    },
+    "eval_4": {
+        "question": "What happens when there is a production incident?",
+        "expected_answer": "For regional outage, data loss or broad critical workflow failure, it is classified as S1. Page immendiately. For enterprise customer cases, first response should be within 30 minutes at all hours. For substantial degradation with a workaround or narrower impact, it falls under S2. Duty lead determines whether immediate escalation is needed. S3 is when an incident is only handled dueing staffed hours.",
+        "expected_source": "docs/operations/ops-001-production-incident-response-handbook_v1.pdf",
+        "expected_evidence": [
+            "S1 covers regional outage, data loss, or a broad critical workflow failure. Page immediately.",
+            "For enterprise customer cases, Support targets a first response within 30 minutes at all hours under CS-001.",
+            "S2 covers substantial degradation with a workaround or narrower impact. The duty lead determines whether immediate escalation is needed.",
+            "S3 can be handled during staffed hours."
+        ]
+    },
+    "eval_5": {
+        "question": "What about updates?",
+        "expected_answer": "S1 publish a confirmed update at least every 30 minutes while impact continues. Avoid giving restoration estimate until the technical lead has a credible basis. ",
+        "expected_source": "docs/operations/ops-001-production-incident-response-handbook_v1.pdf",
+        "expected_evidence": [
+            "For S1, publish a confirmed update at least every 30 minutes while impact continues.",
+            "Avoid giving a restoration estimate until the technical lead has a credible basis."
+        ],
+        "history": [
+            {
+                "role": "user",
+                "content": "What happens when there is a production incident?"
+            },
+            {
+                "role": "assistant",
+                "content": "Ternwell classifies production incidents as S1, S2, or S3. S1 includes regional outages and requires paging immediately. For S2, the duty lead decides whether immediate escalation is needed. S3 can be handled during staffed hours."
+            }
+        ]
+    },
+    "eval_6": {
+        "question": "Telemetry restoration?",
+        "expected_answer": "Use a selected snapshot and apply available transaction logs to the target timestamp. Writes remain disbaled until table ownership and permissions match the expected service roles.",
+        "expected_source": "docs/operations/ops-006-telemetry-recovery-and-restore-drill_v1.pdf",
+        "expected_evidence": [
+            "Start from the selected snapshot and apply available transaction logs to the target timestamp.",
+            "Leave writes disabled until table ownership and permissions match the expected service roles."
+        ]
+    },
+    "eval_7": {
+        "question": "What can you tell me about TW-INC-026 review?",
+        "expected_answer": "For closed actions, we queue age release gate shipped on 2nd of october under CHG-731. Deployment smoke check now verifies per working concurrency. The opem actopm os tp add a replay test for an endpoint that acknowledges a delivery just before a worker restarts.",
+        "expected_source": "docs/operations/ops-015-tw-inc-026-follow-up-review_v1.html",
+        "expected_evidence": [
+            "The queue age release gate shipped on 2 October under CHG-731.",
+            "The deployment smoke check now verifies per-worker concurrency.",
+            "Add a replay test for an endpoint that acknowledges a delivery just before a worker restarts."
+        ]
+    },
+    "eval_8": {
+        "question": "How long does Ternwell keep raw sensor readings and hourly aggregates?",
+        "expected_answer": "Raw sensor are kept for 90 days from observed time. Hourly aggregates retained for 13 months",
+        "expected_source": "docs/governance/gov-002-data-retention-and-deletion-schedule_v1.pdf",
+        "expected_evidence": [
+            "Raw sensor readings are retained for 90 days from observed time.",
+            "Hourly aggregates are retained for 13 months."
+        ]
+    },
+    "eval_9": {
+        "question": "Are there an exceptions?",
+        "expected_answer": "Preservation hold suspends scheduled deletion of affected records which scope and review provided by legal.",
+        "expected_source": "docs/governance/gov-002-data-retention-and-deletion-schedule_v1.pdf",
+        "expected_evidence": "A preservation hold suspends scheduled deletion for the affected records only. Legal provides the scope and review date.",
+        "history": [
+            {
+                "role": "user",
+                "content": "How long does Ternwell keep raw sensor readings and hourly aggregates?"
+            },
+            {
+                "role": "assistant",
+                "content": "Raw sensor readings are kept for 90 days from observed time, and hourly aggregates are kept for 13 months."
+            }
+        ]
+    },
+    "eval_10": {
+        "question": "What are the fourth-quarter roadmap decisions?",
+        "expected_answer": "Commited is release pilot, cursor validation and document new webhook diagnostic. Deferred is delay multi-region tenant transfer until the residency exception flow and Keep custom alert calendars in discovery until two customer pilots confirm need. Review is review progress each Thursday. Changes in committed scope require an updated customer communication plan and a note in the release tracker.",
+        "expected_source": "docs/product/prd-003-fourth-quarter-roadmap-decision-log_v1.json",
+        "expected_evidence": [
+            "Release the gateway health panel pilot.",
+            "Finish regional export cursor validation.",
+            "Document new webhook diagnostics in Fleet Console help.",
+            "Delay multi-region tenant transfer until the residency exception flow has independent verification.",
+            "Keep custom alert calendars in discovery until two customer pilots confirm need.",
+            "Owners review progress each Thursday.",
+            "Changes in committed scope require an updated customer communication plan and a note in the release tracker."
+        ]
+    },
+    "eval_11": {
+        "question": "What are the fourth quarter roadmap decisions?",
+        "expected_answer": "Commited is release pilot, cursor validation and document new webhook diagnostic. Deferred is delay multi-region tenant transfer until the residency exception flow and Keep custom alert calendars in discovery until two customer pilots confirm need. Review is review progress each Thursday. Changes in committed scope require an updated customer communication plan and a note in the release tracker.",
+        "expected_source": "docs/product/prd-003-fourth-quarter-roadmap-decision-log_v1.json",
+        "expected_evidence": [
+            "Release the gateway health panel pilot.",
+            "Finish regional export cursor validation.",
+            "Document new webhook diagnostics in Fleet Console help.",
+            "Delay multi-region tenant transfer until the residency exception flow has independent verification.",
+            "Keep custom alert calendars in discovery until two customer pilots confirm need.",
+            "Owners review progress each Thursday.",
+            "Changes in committed scope require an updated customer communication plan and a note in the release tracker."
+        ]
+    },
+    "eval_12": {
+        "question": "What is Eng-016 about?",
+        "expected_answer": "Re-enrollment - Generate a new registration code, attach the gateway to the destination site, and verify one signed telemetry batch. Registration codes expire after 24 hours. Replace any expired code with a new one and keep the old request as part of the audit trail. Cross-tenant requests - Escalate a cross-tenant transfer to Fleet Engineering and Customer Enablement. Historical readings stay with the original tenant under the retention policy.",
+        "expected_source": "docs/engineering/eng-016-transferring-a-gateway-between-sites_v1.md",
+        "expected_evidence": [
+            "Re-enrollment",
+            "Generate a new registration code, attach the gateway to the destination site, and verify one signed telemetry batch. Registration codes expire after 24 hours. Replace any expired code with a new one and keep the old request as part of the audit trail.",
+            "Cross-tenant requests",
+            "Escalate a cross-tenant transfer to Fleet Engineering and Customer Enablement. Historical readings stay with the original tenant under the retention policy."
+        ]
+    },
+    "eval_13": {
+        "question": "What is Eng 016 about?",
+        "expected_answer": "Re-enrollment - Generate a new registration code, attach the gateway to the destination site, and verify one signed telemetry batch. Registration codes expire after 24 hours. Replace any expired code with a new one and keep the old request as part of the audit trail. Cross-tenant requests - Escalate a cross-tenant transfer to Fleet Engineering and Customer Enablement. Historical readings stay with the original tenant under the retention policy.",
+        "expected_source": "docs/engineering/eng-016-transferring-a-gateway-between-sites_v1.md",
+        "expected_evidence": [
+            "Re-enrollment",
+            "Generate a new registration code, attach the gateway to the destination site, and verify one signed telemetry batch. Registration codes expire after 24 hours. Replace any expired code with a new one and keep the old request as part of the audit trail.",
+            "Cross-tenant requests",
+            "Escalate a cross-tenant transfer to Fleet Engineering and Customer Enablement. Historical readings stay with the original tenant under the retention policy."
+        ]
+    },
+    "eval_14": {
+        "question": "What is Eng-010 about?",
+        "expected_answer": ["Validation",
+                            "Compare the first and last bucket with raw sample counts and verify that observed_at controls the bucket. Roll back through the previous snapshot if an hour is missing or record counts exceed the expected range. The reconciliation report includes affected bucket IDs and the planned next run."],
+        "expected_source": "docs/engineering/eng-010-rebuilding-hourly-telemetry-aggregates_v1.md",
+        "expected_evidence": ["Validation",
+                              "Compare the first and last bucket with raw sample counts and verify that observed_at controls the bucket. Roll back through the previous snapshot if an hour is missing or record counts exceed the expected range. The reconciliation report includes affected bucket IDs and the planned next run."]
+    },
+    "eval_15": {
+        "question": "What is Eng 010 about?",
+        "expected_answer": ["Validation",
+                            "Compare the first and last bucket with raw sample counts and verify that observed_at controls the bucket. Roll back through the previous snapshot if an hour is missing or record counts exceed the expected range. The reconciliation report includes affected bucket IDs and the planned next run."],
+        "expected_source": "docs/engineering/eng-010-rebuilding-hourly-telemetry-aggregates_v1.md",
+        "expected_evidence": ["Validation",
+                              "Compare the first and last bucket with raw sample counts and verify that observed_at controls the bucket. Roll back through the previous snapshot if an hour is missing or record counts exceed the expected range. The reconciliation report includes affected bucket IDs and the planned next run."]
+    },
+    "eval_16": {
+        "question": "What is Eng-017 about?",
+        "expected_answer": ["A device can look connected even when a sensor stopped reporting. The existing dashboard shows the last gateway heartbeat, which confirms connectivity rather than sensor health. The proposed indicator shows last accepted sample time and flags missing samples after twice the configured interval.",
+                            "Trial",
+                            "Apply the new indicator to the Bracken Dairy test tenant and compare support cases for three weeks. Keep the gateway status visible for installers. Product will review alert wording before extending the indicator to the default view.",
+                            "Success measures",
+                            "Measure support requests tagged stale status, cases resolved without Engineering, and false positives during known maintenance windows."],
+        "expected_source": "docs/engineering/eng-017-reducing-stale-device-status_v1.md",
+        "expected_evidence": ["A device can look connected even when a sensor stopped reporting. The existing dashboard shows the last gateway heartbeat, which confirms connectivity rather than sensor health. The proposed indicator shows last accepted sample time and flags missing samples after twice the configured interval.",
+                            "Trial",
+                            "Apply the new indicator to the Bracken Dairy test tenant and compare support cases for three weeks. Keep the gateway status visible for installers. Product will review alert wording before extending the indicator to the default view.",
+                            "Success measures",
+                            "Measure support requests tagged stale status, cases resolved without Engineering, and false positives during known maintenance windows."]
+    },
+    "eval_17": {
+        "question": "What is Eng 017 about?",
+        "expected_answer": ["A device can look connected even when a sensor stopped reporting. The existing dashboard shows the last gateway heartbeat, which confirms connectivity rather than sensor health. The proposed indicator shows last accepted sample time and flags missing samples after twice the configured interval.",
+                            "Trial",
+                            "Apply the new indicator to the Bracken Dairy test tenant and compare support cases for three weeks. Keep the gateway status visible for installers. Product will review alert wording before extending the indicator to the default view.",
+                            "Success measures",
+                            "Measure support requests tagged stale status, cases resolved without Engineering, and false positives during known maintenance windows."],
+        "expected_source": "docs/engineering/eng-017-reducing-stale-device-status_v1.md",
+        "expected_evidence": ["A device can look connected even when a sensor stopped reporting. The existing dashboard shows the last gateway heartbeat, which confirms connectivity rather than sensor health. The proposed indicator shows last accepted sample time and flags missing samples after twice the configured interval.",
+                            "Trial",
+                            "Apply the new indicator to the Bracken Dairy test tenant and compare support cases for three weeks. Keep the gateway status visible for installers. Product will review alert wording before extending the indicator to the default view.",
+                            "Success measures",
+                            "Measure support requests tagged stale status, cases resolved without Engineering, and false positives during known maintenance windows."]
+    },
+    "eval_18": {
+        "question": "What is GOV-003 about?",
+        "expected_answer": ["Wayline provisions tenants in either Singapore or the EU according to the signed contract. Ingest, raw storage, backups, and report exports stay in that contracted region. Support staff may access approved diagnostic views from their work location under SEC-002 when the contract permits it.",
+        "Exceptions",
+        "Data migration or restoration outside the contracted region requires a documented exception approved by Privacy, Security, and the account owner. Notify the customer where the agreement requires it. Keep the planned duration and deletion evidence in the request.",
+        "Pilot checks",
+        "Confirm region at kickoff and again before enrolling the first gateway. Test the connection endpoint against a synthetic tenant before accepting production sensor data."],
+        "expected_source": "docs/governance/gov-003-regional-hosting-and-data-residency_v1.md",
+        "expected_evidence": ["Wayline provisions tenants in either Singapore or the EU according to the signed contract. Ingest, raw storage, backups, and report exports stay in that contracted region. Support staff may access approved diagnostic views from their work location under SEC-002 when the contract permits it.",
+        "Exceptions",
+        "Data migration or restoration outside the contracted region requires a documented exception approved by Privacy, Security, and the account owner. Notify the customer where the agreement requires it. Keep the planned duration and deletion evidence in the request.",
+        "Pilot checks",
+        "Confirm region at kickoff and again before enrolling the first gateway. Test the connection endpoint against a synthetic tenant before accepting production sensor data."]
+    },
+    "eval_19": {
+        "question": "What is GOV003 about?",
+        "expected_answer": ["Wayline provisions tenants in either Singapore or the EU according to the signed contract. Ingest, raw storage, backups, and report exports stay in that contracted region. Support staff may access approved diagnostic views from their work location under SEC-002 when the contract permits it.",
+        "Exceptions",
+        "Data migration or restoration outside the contracted region requires a documented exception approved by Privacy, Security, and the account owner. Notify the customer where the agreement requires it. Keep the planned duration and deletion evidence in the request.",
+        "Pilot checks",
+        "Confirm region at kickoff and again before enrolling the first gateway. Test the connection endpoint against a synthetic tenant before accepting production sensor data."],
+        "expected_source": "docs/governance/gov-003-regional-hosting-and-data-residency_v1.md",
+        "expected_evidence": ["Wayline provisions tenants in either Singapore or the EU according to the signed contract. Ingest, raw storage, backups, and report exports stay in that contracted region. Support staff may access approved diagnostic views from their work location under SEC-002 when the contract permits it.",
+        "Exceptions",
+        "Data migration or restoration outside the contracted region requires a documented exception approved by Privacy, Security, and the account owner. Notify the customer where the agreement requires it. Keep the planned duration and deletion evidence in the request.",
+        "Pilot checks",
+        "Confirm region at kickoff and again before enrolling the first gateway. Test the connection endpoint against a synthetic tenant before accepting production sensor data."]
+    },
+    "eval_20": {
+        "question": "What is gov-007 about?",
+        "expected_answer": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."],
+        "expected_source": "docs/governance/gov-007-october-governance-review-minutes_v1.md",
+        "expected_evidence": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."]
+    },
+    "eval_21": {
+        "question": "What is gov007 about?",
+        "expected_answer": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."],
+        "expected_source": "docs/governance/gov-007-october-governance-review-minutes_v1.md",
+        "expected_evidence": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."]
+    },
+    "eval_22": {
+        "question": "What is gov 007 about?",
+        "expected_answer": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."],
+        "expected_source": "docs/governance/gov-007-october-governance-review-minutes_v1.md",
+        "expected_evidence": ["The committee approved the revised retention schedule and reviewed the queue incident follow-up. Privacy will review records that mention the superseded 180-day raw telemetry proposal. Site Reliability will use one checklist for both regional restore drills and keep the RTO and RPO evidence separate.",
+        "Decisions",
+        "The board reaffirmed regional hosting and retained the exception procedure in GOV-003. Product will keep a data handling entry for every customer-facing AI feature. Finance will confirm the renewal owner for all tools that store customer or employee data."]
+    },
+    "eval_23": {
+        "question": "What is pRd-005 about?",
+        "expected_answer": "Open Settings, then Display Preferences, and choose Celsius or Fahrenheit. This changes displayed charts and tables for your user. Alert profiles and API readings still store Celsius values. When sharing a screenshot, include the displayed unit so reviewers can interpret the chart.",
+        "expected_source": "docs/product/prd-005-changing-dashboard-temperature-units_v1.txt",
+        "expected_evidence": "Open Settings, then Display Preferences, and choose Celsius or Fahrenheit. This changes displayed charts and tables for your user. Alert profiles and API readings still store Celsius values. When sharing a screenshot, include the displayed unit so reviewers can interpret the chart."
+    },
+    "eval_24": {
+        "question": "What is pRd 005 about?",
+        "expected_answer": "Open Settings, then Display Preferences, and choose Celsius or Fahrenheit. This changes displayed charts and tables for your user. Alert profiles and API readings still store Celsius values. When sharing a screenshot, include the displayed unit so reviewers can interpret the chart.",
+        "expected_source": "docs/product/prd-005-changing-dashboard-temperature-units_v1.txt",
+        "expected_evidence": "Open Settings, then Display Preferences, and choose Celsius or Fahrenheit. This changes displayed charts and tables for your user. Alert profiles and API readings still store Celsius values. When sharing a screenshot, include the displayed unit so reviewers can interpret the chart."
+    },
+    "eval_25": {
+        "question": "What is sec-004 about?",
+        "expected_answer": ["Intake",
+        "The sponsor submits the vendor's business purpose, data classification, hosting region, and estimated spend. Finance owns commercial approval. Security owns review of access, retention, and data handling.",
+        "Due diligence",
+        "For customer or employee data, request a current security assurance package, a data processing agreement, and a list of relevant subprocessors. Confirm deletion procedures and the vendor's incident contact. Internal-only tools may qualify for a short review.",
+        "Decision",
+        "Record approved use and restrictions in the vendor register. Reopen the review if the service adds a new data category, changes hosting region, or receives broader permissions."],
+        "expected_source": "docs/security/sec-004-vendor-security-assessment_v1.html",
+        "expected_evidence": ["Intake",
+        "The sponsor submits the vendor's business purpose, data classification, hosting region, and estimated spend. Finance owns commercial approval. Security owns review of access, retention, and data handling.",
+        "Due diligence",
+        "For customer or employee data, request a current security assurance package, a data processing agreement, and a list of relevant subprocessors. Confirm deletion procedures and the vendor's incident contact. Internal-only tools may qualify for a short review.",
+        "Decision",
+        "Record approved use and restrictions in the vendor register. Reopen the review if the service adds a new data category, changes hosting region, or receives broader permissions."]
+    },
+    "eval_26": {
+        "question": "What is sec 004 about?",
+        "expected_answer": ["Intake",
+        "The sponsor submits the vendor's business purpose, data classification, hosting region, and estimated spend. Finance owns commercial approval. Security owns review of access, retention, and data handling.",
+        "Due diligence",
+        "For customer or employee data, request a current security assurance package, a data processing agreement, and a list of relevant subprocessors. Confirm deletion procedures and the vendor's incident contact. Internal-only tools may qualify for a short review.",
+        "Decision",
+        "Record approved use and restrictions in the vendor register. Reopen the review if the service adds a new data category, changes hosting region, or receives broader permissions."],
+        "expected_source": "docs/security/sec-004-vendor-security-assessment_v1.html",
+        "expected_evidence": ["Intake",
+        "The sponsor submits the vendor's business purpose, data classification, hosting region, and estimated spend. Finance owns commercial approval. Security owns review of access, retention, and data handling.",
+        "Due diligence",
+        "For customer or employee data, request a current security assurance package, a data processing agreement, and a list of relevant subprocessors. Confirm deletion procedures and the vendor's incident contact. Internal-only tools may qualify for a short review.",
+        "Decision",
+        "Record approved use and restrictions in the vendor register. Reopen the review if the service adds a new data category, changes hosting region, or receives broader permissions."]
+    }
+}
