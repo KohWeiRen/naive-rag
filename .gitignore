@@ -166,6 +166,9 @@ venv.bak/
 /output.json
 /eval/results/
 
+# Local coding-agent instructions
+/AGENTS.md
+
 
 # Conda environments
 conda-meta/
