@@ -3,6 +3,7 @@ from pathlib import Path
 import re, json, time
 from pgvector import Vector
 from backend.database.db import (
+    find_document_ids_by_code,
     replace_document_and_chunks,
     search_by_keyword,
     search_by_vector,
@@ -22,6 +23,10 @@ tasklist = {
             }
 root = Path(__file__).resolve().parent
 prompts = root / "prompts"
+DOCUMENT_CODE = re.compile(r"(?<![\w-])([A-Za-z]{2,})(?:-|\s+)?([0-9]+)(?![\w-])")
+KEYWORD_HYPHEN_TERM = re.compile(
+    r'"[^"]*(?:"|$)|-\S+|(?<![\w-])[A-Za-z]+(?:-[A-Za-z]+)+(?![\w-])'
+)
 ############################ variables ###############################
 
 def load_instructions(task : str) -> str:
@@ -165,26 +170,47 @@ def prepare_search_plan(session_id, query, history : list[dict] = [], policy: Se
     logger.info(f"Elapsed {time.perf_counter() - start}. Status: Successful parse")
     return {"status": "ready", "search_text": search_texts, "vectors": vectors, "clarification_question": None}
 
-def retrieve_candidates(connection, search_dict: dict, limit=20):
+def retrieve_candidates(connection, search_dict: dict, *, question: str, limit=20):
+    """Return (method, search text, ranked hits) for each candidate list."""
     start = time.perf_counter()
     logger.info("Start of candidate retrieval")
-    
-    ranked_list = []
+
     if not isinstance(search_dict, dict):
         logger.warning("Empty dictionary! Returning empty list...")
-        # print("Empty dictionary! Returning empty list...")
-        return ranked_list
-    
-    search_texts = search_dict.get("search_text")
-    search_vectors = search_dict.get("vectors")
-    
+        return []
+
+    search_texts = search_dict["search_text"]
+    search_vectors = search_dict["vectors"]
+    codes = {f"{prefix.lower()}-{digits}" for prefix, digits in DOCUMENT_CODE.findall(question)}
+    searches = []
+
     with connection.transaction():
+        document_ids = find_document_ids_by_code(connection, codes) if codes else []
         for text, vector in zip(search_texts, search_vectors, strict=True):
-            ranked_list.append(search_by_keyword(connection, text, limit=limit))
-            ranked_list.append(search_by_vector(connection, vector, limit=limit))
-    
-    logger.info(f"end of candidate retrieval. Elapsed: {time.perf_counter() - start}")
-    return ranked_list
+            if document_ids:
+                scoped_hits = search_by_vector(
+                    connection, vector, limit=limit, document_ids=document_ids,
+                )
+                if scoped_hits:
+                    searches.append(("document_id", text, scoped_hits))
+                    continue
+
+            keyword_query = text
+            keyword_hits = search_by_keyword(connection, keyword_query, limit=limit)
+            if not keyword_hits:
+                widened = KEYWORD_HYPHEN_TERM.sub(
+                    lambda match: match[0] if match[0].startswith(('"', '-')) else match[0].replace("-", " "),
+                    text,
+                )
+                if widened != text:
+                    keyword_query = widened
+                    keyword_hits = search_by_keyword(connection, keyword_query, limit=limit)
+
+            searches.append(("keyword", keyword_query, keyword_hits))
+            searches.append(("vector", text, search_by_vector(connection, vector, limit=limit)))
+
+    logger.info("End of candidate retrieval. Elapsed: %.3f", time.perf_counter() - start)
+    return searches
     
 def rank_chunks_with_rrf(ranked_list, k=60, top=8):
     start = time.perf_counter()

@@ -161,7 +161,32 @@ def insert_session_message_in_db(connection, session_id, message_index, message_
                        (session_id, message_index, message_role, message_content))
     connection.commit()
     
-def search_by_vector(connection, query_vector, limit=20):
+def find_document_ids_by_code(connection, codes):
+    """Find UUIDs for lowercase codes taken from the start of indexed filenames."""
+    rows = connection.execute(
+        """
+        SELECT id
+        FROM documents
+        WHERE lower(substring(split_part(source_key, '/', -1) FROM '^([A-Za-z]+-[0-9]+)-')) = ANY(%s)
+        """,
+        (list(codes),),
+    ).fetchall()
+    return [document_id for (document_id,) in rows]
+
+
+def search_by_vector(connection, query_vector, limit=20, *, document_ids=None):
+    if document_ids is not None:
+        return connection.execute(
+            """
+            SELECT document_id, chunk_index, content
+            FROM document_chunks
+            WHERE document_id = ANY(%s)
+            ORDER BY embedding <=> %s, document_id, chunk_index
+            LIMIT %s
+            """,
+            (document_ids, Vector(query_vector), limit),
+        ).fetchall()
+
     return connection.execute("""
                               SELECT document_id, chunk_index, content
                               FROM document_chunks

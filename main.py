@@ -92,8 +92,8 @@ def chat():
                 message_index += 1
                 continue
             
-            ranked_lists = retrieve_candidates(connection=connection, search_dict=plan)
-            chunks = rank_chunks_with_rrf(ranked_lists)
+            searches = retrieve_candidates(connection, plan, question=current_query["content"])
+            chunks = rank_chunks_with_rrf([hits for _, _, hits in searches])
             
             payload = {
                 "current_query" : current_query["content"],
@@ -154,8 +154,8 @@ def chat_and_run(query: str, session_id, user_id):
             logger.info(f"End of chat and run due clarification. Elapsed: {time.perf_counter()-start}")
             return {"session_id": session_id, "content": clarification} # ask the clarification question
             
-        ranked_lists = retrieve_candidates(connection=connection, search_dict=plan)
-        chunks = rank_chunks_with_rrf(ranked_lists)
+        searches = retrieve_candidates(connection, plan, question=current_query["content"])
+        chunks = rank_chunks_with_rrf([hits for _, _, hits in searches])
         
         payload = {
             "current_query" : current_query["content"],

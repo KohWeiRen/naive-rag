@@ -27,6 +27,8 @@ def opencode_send_for_inference(client, *, model, messages, max_output_tokens, s
         raise RuntimeError("Error! No valid response.")
 
     if response.choices[0].finish_reason in ["content_filter", "length"]:
+        # print(message)
+        # print(len(response.choices[0].message.content))
         raise ValueError(f"Error! Response was not complete due to {response.choices[0].finish_reason}")
     
     message = response.choices[0].message
