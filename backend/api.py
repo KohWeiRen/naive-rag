@@ -14,7 +14,11 @@ session_secret = retrieve_val_from_env("SESSION_SECRET", "")
 if not session_secret:
     raise RuntimeError("Set SESSION_SECRET in backend/.env")
 
-app.add_middleware(SessionMiddleware, secret_key=session_secret)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=session_secret,
+    https_only=retrieve_val_from_env("SESSION_COOKIE_SECURE", False),
+)
 app.include_router(auth_router)
 
 project_root = Path(__file__).resolve().parents[1]

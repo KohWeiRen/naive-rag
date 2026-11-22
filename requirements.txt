@@ -1,0 +1,14 @@
+Authlib==1.9.10
+beautifulsoup4==4.15.0
+fastapi==0.165.0
+httpx==0.28.1
+itsdangerous==2.2.0
+openai==3.46.0
+pgvector==0.5.1
+psycopg[binary]==3.3.8
+pydantic==2.14.3
+pypdf==7.0.1
+python-dotenv==1.2.4
+sentence-transformers==6.2.0
+starlette==1.10.0
+uvicorn==0.54.0

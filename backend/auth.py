@@ -25,7 +25,6 @@ async def login(request: Request):
 async def google_callback(request: Request):
     try:
         token = await oauth.google.authorize_access_token(request)
-        print(request)
     except OAuthError:
         raise HTTPException(400, "Google sign in could not be completed.") from None
     

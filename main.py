@@ -133,7 +133,7 @@ def chat_and_run(query: str, session_id, user_id):
         else:
             session = get_session(connection, session_id, user_id)
             if session is None:
-                logger.error("Session ID %s with user id %s not found", session_id, user_id)
+                logger.warning("Chat session not found for the signed-in user")
                 raise HTTPException(status_code=404, detail="Session ID with User ID not found!")
             message_rows = get_session_messages(connection, session_id, user_id)
             message_index = message_rows[-1][0] + 1 if message_rows else 1 # message rows return a tuple of  (message_index, message_role, message_content) in asc order. last message has latest message index and index 0 is message index
