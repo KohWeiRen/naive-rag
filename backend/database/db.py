@@ -36,22 +36,44 @@ def get_document(connection, source_key : str):
 
 def get_session(connection, session_id, user_id):
     with connection.transaction():
-        return connection.execute("""
-                                  SELECT id, user_id
-                                  FROM sessions
-                                  WHERE id = %s AND user_id = %s
-                                  """,
-                                  (session_id,user_id)).fetchone()
+        return connection.execute(
+            """
+            SELECT id, user_id
+            FROM sessions
+            WHERE id = %s AND user_id = %s
+            """,
+            (session_id, user_id),
+        ).fetchone()
 
-def get_session_messages(connection, session_id):
+def get_session_messages(connection, session_id, user_id):
     with connection.transaction():
-        return connection.execute("""
-                                  SELECT message_index, message_role, content
-                                  FROM session_messages
-                                  WHERE session_id = %s
-                                  ORDER BY message_index ASC
-                                  """,
-                                  (session_id,)).fetchall()
+        return connection.execute(
+            """
+            SELECT m.message_index, m.message_role, m.content
+            FROM session_messages AS m
+            JOIN sessions AS s ON s.id = m.session_id
+            WHERE m.session_id = %s AND s.user_id = %s
+            ORDER BY m.message_index ASC
+            """,
+            (session_id, user_id),
+        ).fetchall()
+
+def get_user_sessions(connection, user_id):
+    return connection.execute(
+        """
+        SELECT s.id, COALESCE(LEFT((
+            SELECT m.content
+            FROM session_messages AS m
+            WHERE m.session_id = s.id AND m.message_role = 'user'
+            ORDER BY m.message_index ASC
+            LIMIT 1
+        ), 80), 'New chat') AS title
+        FROM sessions AS s
+        WHERE s.user_id = %s
+        ORDER BY s.start_time DESC, s.id DESC
+        """,
+        (user_id,),
+    ).fetchall()
 
 def upsert_document_in_db(connection, source_key, file_path, title, source_version, content_hash):
     """Return the document ID when a new or newer version is saved."""

@@ -29,19 +29,27 @@ async def google_callback(request: Request):
     except OAuthError:
         raise HTTPException(400, "Google sign in could not be completed.") from None
     
-    google_sub = (token.get("userinfo") or {}).get("sub")
+    user_info = token.get("userinfo") or {}
+    google_sub = user_info.get("sub")
     if not google_sub:
         raise HTTPException(400, "Google did not return a verified account ID.")
     
     user_id = await run_in_threadpool(get_or_create_google_user, google_sub)
     request.session.clear()
     request.session["user_id"] = str(user_id)
+    if user_info.get("email_verified") is True and user_info.get("email"):
+        request.session["email"] = user_info["email"]
     return RedirectResponse("/", status_code=303)
 
 @router.get("/me")
 def me(request: Request):
     user_id = request.session.get("user_id")
+    email = request.session.get("email")
     if user_id is None:
         raise HTTPException(401, "Sign in first.")
-    return {"user_id": user_id}
+    return {"user_id": user_id, "email": email}
 
+
+@router.post("/logout", status_code=204)
+def logout(request: Request):
+    request.session.clear()
